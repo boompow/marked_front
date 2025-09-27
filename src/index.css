@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital;opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import "tailwindcss";
+
+/* standards */
+
+@theme{
+    --font-inter: "Inter", sans-serif;
+    
+    --font-weight-marked-black: 900; 
+    --font-weight-marked-extrabold: 800; 
+    --font-weight-marked-bold: 700; 
+    --font-weight-marked-semibold: 600; 
+    --font-weight-marked-medium: 500; 
+    --font-weight-marked-regular: 400; 
+
+    --color-marked-dark-green: #068922;
+    --color-marked-moderate-green: #5BF718;
+    --color-marked-accent: #D8FC47;
+    --color-marked-blue: #0E70C0;
+    
+    /* text gradient */
+    --color-marked-text-dark-green: #09A22A;
+    --color-marked-text-light-green: #42D603;
+
+
+}
+
+.background {
+  background: linear-gradient(45deg, #068922, #5BF718, #D8FC47);
+}
+
+.text-gradient{
+    color: #09A22A;
+    background-image: linear-gradient(30deg, #09A22A, #42D603);
+}
