@@ -1,0 +1,7 @@
+# robots.txt for Marked
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Allow: /
+
+Sitemap: http://localhost:5173.com/sitemap.xml

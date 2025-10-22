@@ -1,17 +1,39 @@
-import Decoration from "../components/Decoration"
+import Decoration from "../components/Decoration";
+import NavLanding from "../components/NavLanding";
+import { useSession } from "../services/authClient";
+import { NavLink } from "react-router";
+import { googleLoginHandler } from "../services/authenticationHandlers";
+import {motion} from "motion/react"
 
 
 const Home = () => {
+  const {data:session} = useSession();
+
   return (
-    <div className='max-w-[100vw] w-[100%] min-h-[100vh] h-[100%] background relative -z-50'>
-        
-    {/* Hero Section */}
-    <div className="border border-red-600 z-0 flex flex-col max-md:items-center items-start  w-full min-h-screen px-[6rem]">
-        <h1 className="uppercase text-[clamp(2.5rem,10vw,8rem)] text-white font-marked-black">ALL YOUR BOOKMARKS IN ONE PLACE.</h1>
-        <p className="border border-red-600 text-start text-white text-[clamp(1rem,1vw,2rem)] font-marked-semibold tracking-widest uppercase leading-10 mb-8 max-lg:mb-12">Easily organize, access, and manage all your favorite links from anywhere—fast, simple, and clutter-free.</p>
-        <button className="text-3xl font-marked-black text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-10 py-5 mb-8">GET STARTED</button>
-    </div>
-        
+    <div className='max-w-screen min-h-[100vh] h-[100%] background relative px-8 py-4'>
+      <div className="z-30 w-full min-h-full relative flex flex-col items-center">
+        <NavLanding/>
+          
+      {/* Hero Section */}
+      <div className="z-0 flex flex-col items-center w-[90%] font-inter">
+          <motion.h1 initial={{ y:20, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="uppercase text-[clamp(2.5rem,9vw,6rem)] text-green-950 font-marked-black text-center"
+          >ALL YOUR BOOKMARKS IN ONE PLACE.</motion.h1>
+          <motion.p initial={{ y:20, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.4, delay:1}} className="text-white text-[clamp(1rem,1.5vw,1.5rem)] font-marked-semibold tracking-widest w-[70%] uppercase leading-10 mb-8 max-lg:mb-12 text-center">Easily organize, access, and manage all your favorite links from anywhere—fast, simple, and clutter-free.</motion.p>
+
+          {session ? 
+            <NavLink to="/dashboard">
+              <motion.button initial={{scale: 0, y:-10}} animate={{scale:1, y:0}} transition={{duration:0.3, delay:1.4}} className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8">go to dashboard</motion.button>
+            </NavLink>
+            :
+            <motion.button initial={{scale: 0, y:-10}} animate={{scale:1, y:0}} transition={{duration:0.3, delay:1.4}}  className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8"
+            onClick={()=>{
+              googleLoginHandler()
+            }}
+            >GET STARTED</motion.button>
+            }
+      </div>
+          
+      </div>
         
         
     <Decoration/>
