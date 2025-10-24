@@ -11,6 +11,8 @@ import { logoutHandler } from "../services/authenticationHandlers";
 import { createLinkHandler } from "../services/linkHandlers";
 import { addLinkStore } from "../store/linkSlice";
 
+import CharacterCounter from "./CharacterCounter";
+
 const NavLanding = () => {
   const [modal, setModal] = useState(false);
 
@@ -21,6 +23,7 @@ const NavLanding = () => {
   const [addLink, setAddLink] = useState(false)
 
   const {data:session} = useSession();
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -72,13 +75,19 @@ const NavLanding = () => {
     
               }}>
                   <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Link</h1>
-                  <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
-                  <input id="title" name="title" type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{setCurrentTitle(e.target.value)}}/>
-                  <label htmlFor="url" className="text-sm uppercase font-bold mt-2">URL</label>
-                  <input id="url" type="url" name="url" placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
-                  <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
-                  <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40"  value={currentRemark} onChange={(e)=>{setCurrentRemark(e.target.value)}}></textarea>
-                  <button type="submit" className="update-btn">Create Link</button>
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+                    <CharacterCounter char={currentTitle.length} max={30}/>
+                  </div>
+                  <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
+                  <label className="text-sm uppercase font-bold mt-4" htmlFor="url">URL</label>
+                  <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
+                  <div className="flex items-center justify-between mt-4">
+                    <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
+                    <CharacterCounter char={currentRemark.length} max={200}/>
+                  </div>
+                  <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentRemark} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentRemark(e.target.value)}}}></textarea>
+                  <button type="submit" className="update-btn mt-4">Create Link</button>
               </form>
             </ModalContainer>
 
@@ -131,8 +140,8 @@ const NavLanding = () => {
         <DropdownMenu.Root>
           <DropdownMenu.Trigger>
             <div className="profile-wrapper">
-              {session?.user?.profile ? 
-              <img src={ session?.user?.profile} alt="profile" className="profile cursor-pointer"/>:
+              {session?.user?.image ? 
+              <img src={ session?.user?.image} alt="profile" className="profile cursor-pointer"/>:
               <div className="profile cursor-pointer"></div>  
               }
             </div>
@@ -163,8 +172,8 @@ const NavLanding = () => {
               {session &&
               <>
                 <span className="py-2 flex items-center gap-4 w-full">
-                  { session?.user?.profile ? 
-                  <img src={ session?.user?.profile} alt="profile" className="profile !w-8 !h-8"/>:
+                  { session?.user?.image ? 
+                  <img src={ session?.user?.image} alt="profile" className="profile !w-8 !h-8"/>:
                   <div className="profile !w-8 !h-8"></div>}
                   <p className='text-gray-800 font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
                 </span>

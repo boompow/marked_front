@@ -9,6 +9,8 @@ import ModalContainer from "./ModalContainer"
 import { NavLink } from "react-router"
 import { useNavigate } from "react-router"
 
+import CharacterCounter from "./CharacterCounter"
+
 const CategoryRow = ({category}) => {
     const [editCategory, setEditCategory] = useState(false)
     const [deleteCategory, setDeleteCategory] = useState(false)
@@ -53,10 +55,16 @@ const CategoryRow = ({category}) => {
   
             }}>
                 <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Edit Category</h1>
-                <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
-                <input id="title" name="title" type="text" placeholder="Category Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{setCurrentTitle(e.target.value)}}/>
-                <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
-                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40"  value={currentDescription} onChange={(e)=>{setCurrentDescription(e.target.value)}}></textarea>
+                <div className="flex items-center justify-between mt-4">
+                  <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+                  <CharacterCounter char={currentTitle.length} max={30}/>
+                </div>
+                <input id="title" name="title" type="text" placeholder="Category Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}} required/>
+                <div className="flex items-center justify-between mt-4">
+                  <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
+                    <CharacterCounter char={currentDescription.length} max={200}/>
+                </div>
+                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border h-[150px] resize-none border-white/40 scrollable"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>                                
                 <button type="submit" className="update-btn">Edit Category</button>
             </form>
           </ModalContainer>

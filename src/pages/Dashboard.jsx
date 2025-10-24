@@ -9,6 +9,7 @@ import { addCategoryStore, updateCategoriesArray } from "../store/categorySlice"
 import { updateLinksArray } from "../store/linkSlice"
 import CategoryRow from "../components/CategoryRow"
 import { BookAlert, NotebookPen } from "lucide-react"
+import CharacterCounter from "../components/CharacterCounter"
 
 const Dashboard = () => {
   const [currentTitle, setCurrentTitle] = useState("")
@@ -107,11 +108,17 @@ const Dashboard = () => {
   
             }}>
                 <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Category</h1>
-                <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
-                <input id="title" name="title" type="text" placeholder="Category Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{setCurrentTitle(e.target.value)}}/>
-                <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
-                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40"  value={currentDescription} onChange={(e)=>{setCurrentDescription(e.target.value)}}></textarea>
-                <button type="submit" className="update-btn">Create Category</button>
+                <div className="flex items-center justify-between mt-4">
+                  <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+                  <CharacterCounter char={currentTitle.length} max={30}/>
+                </div>
+                <input id="title" name="title" type="text" placeholder="Category Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}} required/>
+                <div className="flex items-center justify-between mt-4">
+                  <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
+                   <CharacterCounter char={currentDescription.length} max={200}/>
+                </div>
+                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border h-[150px] resize-none border-white/40 scrollable"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+                <button type="submit" className="update-btn mt-4">Create Category</button>
             </form>
           </ModalContainer>
 
@@ -125,7 +132,7 @@ const Dashboard = () => {
       
       
       {/* footer */}
-      <div className="border-t border-white/40 h-[3rem] w-full flex items-center justify-center p-2 font-inter">
+      <div className="border-t border-white/40 h-[3rem] w-full flex items-center justify-end p-2 font-inter">
           <p className="text-slate-800">Made with ❤️ by <a className="hover:text-marked-moderate-green" href="https://github.com/boompow" target="_blank">Boom</a></p>
       </div>
     </div>

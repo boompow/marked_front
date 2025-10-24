@@ -22,10 +22,10 @@ const Home = () => {
 
           {session ? 
             <NavLink to="/dashboard">
-              <motion.button initial={{scale: 0, y:-10}} animate={{scale:1, y:0}} transition={{duration:0.3, delay:1.4}} className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8">go to dashboard</motion.button>
+              <motion.button initial={{ y:20, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.3, delay:1.3}} className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8">go to dashboard</motion.button>
             </NavLink>
             :
-            <motion.button initial={{scale: 0, y:-10}} animate={{scale:1, y:0}} transition={{duration:0.3, delay:1.4}}  className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8"
+            <motion.button initial={{ y:20, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.3, delay:1.3}}  className="text-xl uppercase font-marked-bold text-marked-dark-green bg-marked-accent rounded-xl cursor-pointer px-12 py-4 mb-8"
             onClick={()=>{
               googleLoginHandler()
             }}

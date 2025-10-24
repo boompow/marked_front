@@ -9,6 +9,7 @@ import { NavLink } from "react-router"
 import { deleteLinkStore, editLinkStore } from "../store/linkSlice"
 
 import { motion } from "motion/react"
+import CharacterCounter from "./CharacterCounter"
 
 
 const cardVariant = {
@@ -37,7 +38,7 @@ const LinkCard = ({link}) => {
     variants={cardVariant}
     initial="hidden"
     animate="show"
-    className='group flex flex-col w-[100%] max-w-[350px] min-h-[350px] shrink-0 px-3 pb-3 pt-1 m-4 border border-white/40 items-center justify-center'>
+    className='group flex flex-col w-[350px] h-[370px] px-3 pb-3 pt-1 m-4 border border-white/40 items-center justify-center '>
        <span className="flex items-center justify-end w-full">
        <DropdownMenu.Root>
         <DropdownMenu.Trigger>
@@ -66,10 +67,16 @@ const LinkCard = ({link}) => {
        </DropdownMenu.Root>
        </span>
        <NavLink to={link?.url ? link?.url :"/dashboard"} target='_blank' className='bg-none w-full flex-1 flex flex-col gap-2'>
-          <div className='flex-1 bg-pink-400'></div>
+       {
+        link?.screenshot ?
+        <div className='flex-1'><img src={link?.screenshot} alt="screenshot" className='object-cover h-full transition-all duration-300 ease-in-out'/></div>
+          
+        :
+      <div className='flex-1 bg-orange-300 hover:bg-orange-500'></div>
+      }
           <p className="text-white p-2 font-bold hover:text-green-500 capitalize">{link?.title ? link?.title : "link name"}</p>
        </NavLink>
-        <div className="p-2 my-2 w-full h-[80px] bg-marked-gray text-white hidden group-hover:flex">
+        <div className="p-2 my-2 w-full h-[100px] bg-marked-gray wrap-anywhere scrollable overflow-y-auto text-white hidden group-hover:flex transition-all duration-300 ease-in-out">
           <p>{link?.description ? link?.description : "add remark"}</p>
         </div>
 
@@ -94,13 +101,19 @@ const LinkCard = ({link}) => {
 
           }}>
               <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Edit Link</h1>
-              <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
-              <input id="title" name="title" type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{setCurrentTitle(e.target.value)}}/>
-              <label className="text-sm uppercase font-bold mt-2" htmlFor="url">URL</label>
-              <input id="url" type="url" name="url" placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
-              <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
-              <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40"  value={currentDescription} onChange={(e)=>{setCurrentDescription(e.target.value)}}></textarea>
-              <button type="submit" className="update-btn">Update Link</button>
+              <div className="flex items-center justify-between">
+                <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+                <CharacterCounter char={currentTitle.length} max={30}/>
+              </div>
+              <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
+              <label className="text-sm uppercase font-bold mt-4" htmlFor="url">URL</label>
+              <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
+              <div className="flex items-center justify-between mt-4">
+                <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
+                 <CharacterCounter char={currentDescription.length} max={200}/>
+              </div>
+              <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+              <button type="submit" className="update-btn mt-4">Update Link</button>
           </form>
         </ModalContainer>
 

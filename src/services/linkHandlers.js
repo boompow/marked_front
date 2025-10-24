@@ -44,7 +44,7 @@ export async function updateLinkHandler(body, linkId, editLinkStore, dispatch){
         const data = await response.json()
         dispatch( editLinkStore(data.link))
         
-        notification("Link Renamed Successfully", true)
+        notification("Link Edited Successfully", true)
     } catch (error) {
         notification(error, false)
     }

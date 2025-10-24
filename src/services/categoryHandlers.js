@@ -67,7 +67,7 @@ export async function updateCategoryHandler(body, categoryId, editCategoryStore,
         const data = await response.json()
         dispatch( editCategoryStore(data.category))
 
-        return notification("Category Updated Successfully", true)
+        return notification("Category Edited Successfully", true)
     } catch (error) {
         return notification(error, false)
     }

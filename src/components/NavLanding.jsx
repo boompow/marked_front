@@ -15,6 +15,8 @@ const NavLanding = () => {
 
   const {data:session} = useSession();
 
+  console.log(session)
+
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -41,8 +43,8 @@ const NavLanding = () => {
       {session ? 
         <DropdownMenu.Root >
           <DropdownMenu.Trigger>
-              {session?.user?.profile ? 
-              <motion.img initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} src={ session?.user?.profile} alt="profile" className="profile-home cursor-pointer"/>:
+              {session?.user?.image ? 
+              <motion.img initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} src={ session?.user?.image} alt="profile" className="profile-home cursor-pointer"/>:
               <motion.div initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="profile-home cursor-pointer"></motion.div>  
               }
           </DropdownMenu.Trigger>
@@ -80,8 +82,8 @@ const NavLanding = () => {
               {session ? 
               <>
                 <span className="py-2 flex items-center gap-4 w-full">
-                  { session?.user?.profile ? 
-                  <img src={ session?.user?.profile} alt="profile" className="profile-home !w-8 !h-8"/>:
+                  { session?.user?.image ? 
+                  <img src={ session?.user?.image} alt="profile" className="profile-home !w-8 !h-8"/>:
                   <div className="profile-home !w-8 !h-8"></div>}
                   <p className='text-gray-800 font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
                 </span>
