@@ -12,18 +12,20 @@ export async function createLinkHandler(body, addLinkStore, dispatch){
             body:JSON.stringify(body)
         })
 
+
         if(!response.ok){
             const error = await response.message;
             return notification(error, false)
         }
 
         const data = await response.json()
+        console.log(data)
         dispatch(addLinkStore(data.link))
 
         notification("Link Created Successfully", true)
     } catch (error) {
         notification(error, false)
-    }
+    } 
 }
 
 
@@ -47,7 +49,7 @@ export async function updateLinkHandler(body, linkId, editLinkStore, dispatch){
         notification("Link Edited Successfully", true)
     } catch (error) {
         notification(error, false)
-    }
+    } 
 }
 
 
@@ -72,7 +74,7 @@ export async function addLinkToCategory(linkId, categoryId, editLinkStore, dispa
        notification("Link Added to the Category", true)
     } catch (error) {
         notification(error, false)
-    }
+    } 
 }
 
 
@@ -96,5 +98,5 @@ export async function deleteLinkHandler(linkId, deleteLinkStore, dispatch){
         notification("Link Deleted Successfully", true)
     } catch (error) {
         notification(error, false)
-    }
+    } 
 }

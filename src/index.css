@@ -28,8 +28,28 @@
     --color-marked-text-dark-green: #09A22A;
     --color-marked-text-light-green: #42D603;
 
-    
+}
 
+@keyframes loading{
+      0%{
+        transform: scaleX(0)
+      }
+
+      50%{
+        transform: scaleX(1)
+      }
+
+      100%{
+        transform: scaleX(0)
+      }
+    }
+
+.loading-animation{
+  transform-origin: center;
+  animation-name: loading;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .background {
@@ -71,6 +91,17 @@
   @apply rounded-full bg-marked-text-light-green max-md:w-6 max-md:h-6 w-10 h-10;
 }
 
+
+.select-wrapper::after {
+  content: '▼'; /* arrow */
+  position: absolute;
+  font-size:8px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: white;
+}
 
 
 /* scrollbar styling */

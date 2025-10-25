@@ -2,7 +2,7 @@ import { useParams } from "react-router"
 import { useSelector } from "react-redux"
 import LinkCard from "./LinkCard"
 import { motion } from "motion/react"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useDispatch } from "react-redux"
 import { createLinkHandler } from "../services/linkHandlers"
 import { addLinkStore } from "../store/linkSlice"
@@ -24,13 +24,23 @@ const containerVariants = {
 const CategoryOutlet = () => {
   const {categoryId} = useParams()
   const categories = useSelector((state)=>state.categories.categories)
-  const currentCategory = useSelector((state)=>state.categories.categories?.find(category=>category?._id === categoryId)) ?? []
   const currentLinks = useSelector((state)=>state.links.links)
-
+  const currentCategory = useMemo(() => {
+      return categories?.find((category) => category?._id === categoryId) ?? null;
+    }, [categories, categoryId]);
   
     const [currentTitle, setCurrentTitle] = useState("")
     const [currentURL, setCurrentURL] = useState("")
-    const [currentRemark, setCurrentRemark] = useState("")
+    const [currentDescription, setCurrentDescription] = useState("")
+    const [selectedCategory, setSelectedCategory] = useState("")
+
+    useEffect(() => {
+      if (currentCategory?._id) {
+        setSelectedCategory(currentCategory?._id);
+      } else {
+        setSelectedCategory("");
+      }
+    }, [currentCategory]);
   
     const [addLink, setAddLink] = useState(false)
 
@@ -51,14 +61,16 @@ const CategoryOutlet = () => {
                 const newLink = {
                   title: currentTitle,
                   url: currentURL,
-                  description: currentRemark
+                  description: currentDescription,
+                  categoryId: selectedCategory
                 }
-    
+
                 createLinkHandler(newLink, addLinkStore, dispatch)
                 setAddLink(false)
-                setCurrentRemark("")
+                setCurrentDescription("")
                 setCurrentTitle("")
                 setCurrentURL("")
+                setSelectedCategory("")
     
               }}>
                   <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Link</h1>
@@ -70,20 +82,26 @@ const CategoryOutlet = () => {
                   <label className="text-sm uppercase font-bold mt-2" htmlFor="url">URL</label>
                   <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
                   <label className="text-sm uppercase font-bold mt-2" htmlFor="category">Category</label>
-                  <select name="category" id="category"  className="p-2 outline-0 border border-white/40 bg-marked-gray" >
-                    {
-                      categories.map((category)=>{
-                        return(
-                          <option value={category?._id} >{category?.title}</option>
-                        )
-                      })
-                    }
-                  </select>
-                  <div className="flex items-center justify-between mt-2">
-                    <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
-                    <CharacterCounter char={currentRemark.length} max={200}/>
+                  <div className="border border-white/40 bg-marked-gray select-wrapper relative" >
+                    <select name="category" id="category" className="appearance-none p-2 outline-0 border border-white/40 bg-marked-gray w-full"
+                    value={selectedCategory}
+                    onChange={(e)=>{setSelectedCategory(e.target.value)}}
+                    >
+                      <option value="">Uncategorized</option>
+                      {
+                        categories.map((category)=>{
+                          return(
+                            <option key={category?._id} value={category?._id} >{category?.title}</option>
+                          )
+                        })
+                      }
+                    </select>
                   </div>
-                  <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentRemark} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentRemark(e.target.value)}}}></textarea>
+                  <div className="flex items-center justify-between mt-2">
+                    <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Description</label>
+                    <CharacterCounter char={currentDescription.length} max={200}/>
+                  </div>
+                  <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
                   <button type="submit" className="update-btn mt-2">Create Link</button>
               </form>
             </ModalContainer>
@@ -91,7 +109,7 @@ const CategoryOutlet = () => {
         {
           currentCategory?.description ?
           <p className="p-3 bg-green-950 text-white w-full opacity-0 peer-hover:opacity-100">{currentCategory?.description}</p>
-          : <p className="p-3 bg-green-950 text-white w-full opacity-0 group-hover:opacity-100">Add Remark</p>
+          : <p className="p-3 bg-green-950 text-white w-full opacity-0 group-hover:opacity-100">Add Description</p>
         }
       </div>
       <motion.div 

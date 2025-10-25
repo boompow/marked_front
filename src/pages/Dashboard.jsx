@@ -8,13 +8,19 @@ import { useDispatch, useSelector } from "react-redux"
 import { addCategoryStore, updateCategoriesArray } from "../store/categorySlice"
 import { updateLinksArray } from "../store/linkSlice"
 import CategoryRow from "../components/CategoryRow"
-import { BookAlert, NotebookPen } from "lucide-react"
+import { BookAlert, CirclePlus, NotebookPen } from "lucide-react"
 import CharacterCounter from "../components/CharacterCounter"
+import { createLinkHandler } from "../services/linkHandlers"
+import { addLinkStore } from "../store/linkSlice"
 
 const Dashboard = () => {
   const [currentTitle, setCurrentTitle] = useState("")
   const [currentDescription, setCurrentDescription] = useState("")
   const [addCategory, setAddCategory] = useState(false)
+
+  const [currentURL, setCurrentURL] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [addLink, setAddLink] = useState(false)
   
   const dispatch = useDispatch()
   const currentCategories= useSelector((state)=>state.categories.categories)
@@ -68,14 +74,68 @@ const Dashboard = () => {
         onMouseLeave={stopDrag}
       >
         {/* sidebar */}
-          <div className="flex flex-col h-full items-center p-4 gap-2" style={{width: `${sidebarWidth}px`}}>
+          <div className="md:flex flex-col h-full items-center p-4 gap-2 hidden" style={{width: `${sidebarWidth}px`}}>
             <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2 text-white">
                 <NotebookPen className="w-5 h-5"/>
                 <h1 className="font-regular text-lg" onClick={()=>{
                   setAddCategory(true)
                 }}>New Category</h1>
                </span>
-              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60  px-3 py-2 text-white">
+              {/* add link */}
+              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2 text-white font-regular text-lg" onClick={()=>{setAddLink(true)}}><CirclePlus className="w-5 h-5"/>New Link</span>
+              
+               <ModalContainer modal={addLink} onClose={()=>{setAddLink(false)}}>
+              <form action="" className="flex flex-col p-8 gap-3 w-full text-white font-suse" onSubmit={(e)=>{
+                e.preventDefault()
+                const newLink = {
+                  title: currentTitle,
+                  url: currentURL,
+                  description: currentDescription,
+                  categoryId: selectedCategory
+                }
+    
+                createLinkHandler(newLink, addLinkStore, dispatch)
+                setAddLink(false)
+                setCurrentDescription("")
+                setCurrentTitle("")
+                setCurrentURL("")
+                setSelectedCategory("")
+    
+              }}>
+                  <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Link</h1>
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+                    <CharacterCounter char={currentTitle.length} max={30}/>
+                  </div>
+                  <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
+                  <label className="text-sm uppercase font-bold mt-2" htmlFor="url">URL</label>
+                  <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
+                  <label className="text-sm uppercase font-bold mt-2" htmlFor="category">Category</label>
+                  <div className="border border-white/40 bg-marked-gray select-wrapper relative" >
+                    <select name="category" id="category" className="appearance-none p-2 outline-0 border border-white/40 bg-marked-gray w-full"
+                    value={selectedCategory}
+                    onChange={(e)=>{setSelectedCategory(e.target.value)}}
+                    >
+                      <option value="">Uncategorized</option>
+                      {
+                        currentCategories.map((category)=>{
+                          return(
+                            <option key={category?._id} value={category?._id} >{category?.title}</option>
+                          )
+                        })
+                      }
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Description</label>
+                    <CharacterCounter char={currentDescription.length} max={200}/>
+                  </div>
+                  <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40 max-h-[150px] flex-1 resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+                  <button type="submit" className="update-btn mt-2">Create Link</button>
+              </form>
+            </ModalContainer>
+
+              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2 text-white">
                 <BookAlert className="w-5 h-5"/>
                 <NavLink to={"/dashboard"} className="font-regular text-lg">
                   Uncatagorized
@@ -117,13 +177,13 @@ const Dashboard = () => {
                   <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
                    <CharacterCounter char={currentDescription.length} max={200}/>
                 </div>
-                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border h-[150px] resize-none border-white/40 scrollable"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+                <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border max-h-[150px] flex-1 resize-none border-white/40 scrollable"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
                 <button type="submit" className="update-btn mt-4">Create Category</button>
             </form>
           </ModalContainer>
 
         {/* divider */}
-        <div className="w-2 h-full cursor-col-resize border-r border-white/40 " onMouseDown={startDrag}></div>
+        <div className="w-2 h-full cursor-col-resize border-r border-white/40 md:flex hidden" onMouseDown={startDrag}></div>
 
         {/* main */}
         <div className="flex flex-col overflow-y-auto scrollable h-full flex-1"><Outlet/></div>
@@ -132,7 +192,7 @@ const Dashboard = () => {
       
       
       {/* footer */}
-      <div className="border-t border-white/40 h-[3rem] w-full flex items-center justify-end p-2 font-inter">
+      <div className="border-t border-white/40 h-[3rem] w-full flex items-center justify-center md:justify-end p-2 font-inter">
           <p className="text-slate-800">Made with ❤️ by <a className="hover:text-marked-moderate-green" href="https://github.com/boompow" target="_blank">Boom</a></p>
       </div>
     </div>

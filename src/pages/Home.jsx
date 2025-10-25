@@ -10,8 +10,8 @@ const Home = () => {
   const {data:session} = useSession();
 
   return (
-    <div className='max-w-screen min-h-[100vh] h-[100%] background relative px-8 py-4'>
-      <div className="z-30 w-full min-h-full relative flex flex-col items-center">
+    <div className='w-screen h-screen background relative md:px-8 md:py-4'>
+      <div className="z-30 w-full h-full relative flex flex-col items-center">
         <NavLanding/>
           
       {/* Hero Section */}

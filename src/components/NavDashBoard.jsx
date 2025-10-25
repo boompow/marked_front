@@ -1,36 +1,41 @@
 import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router";
 import { useSession } from "../services/authClient";
 import { DropdownMenu } from "@radix-ui/themes";
-import ModalContainer from "./ModalContainer";
 import {TextAlignJustify, X, Plus, Search} from "lucide-react"
 import { NavLink, useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
 import { logoutHandler } from "../services/authenticationHandlers";
-import { createLinkHandler } from "../services/linkHandlers";
-import { addLinkStore } from "../store/linkSlice";
 
-import CharacterCounter from "./CharacterCounter";
+import { BookAlert, CirclePlus, NotebookPen } from "lucide-react"
+import CharacterCounter from "../components/CharacterCounter"
+import { createLinkHandler } from "../services/linkHandlers"
+import { addLinkStore } from "../store/linkSlice"
+import { createCategoryHandler } from "../services/categoryHandlers"
+import ModalContainer from "../components/ModalContainer"
+import { addCategoryStore } from "../store/categorySlice"
+import CategoryRow from "./CategoryRow";
 
 const NavLanding = () => {
   const [modal, setModal] = useState(false);
-
-  const [currentTitle, setCurrentTitle] = useState("")
-  const [currentURL, setCurrentURL] = useState("")
-  const [currentRemark, setCurrentRemark] = useState("")
-
-  const [addLink, setAddLink] = useState(false)
-
   const {data:session} = useSession();
-
   const navigate = useNavigate()
-  const dispatch = useDispatch()
 
   // search bar component setup
   const [searchText, setSearchText] = useState("")
   const currentCategories = useSelector(state=>state.categories.categories)
   const currentLinks = useSelector(state=>state.links.links)
+
+
+  // mobile-version data
+  const [currentTitle, setCurrentTitle] = useState("")
+  const [currentDescription, setCurrentDescription] = useState("")
+  const [addCategory, setAddCategory] = useState(false)
+
+  const [currentURL, setCurrentURL] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [addLink, setAddLink] = useState(false)
+  
+  const dispatch = useDispatch()
 
   // const navigate = useNavigate()
 
@@ -55,42 +60,6 @@ const NavLanding = () => {
       </NavLink>
         {/* add search input here */}
         <div className="flex items-center gap-8 max-md:hidden border-amber-300">
-            {/* add link */}
-            <button className="outline-0 p-3 bg-gray-900 hover:bg-marked-text-light-green/70 active:bg-marked-text-light-green/80 text-white cursor-pointer" onClick={()=>{setAddLink(true)}}><Plus className="w-4 h-4"/></button>
-            
-            <ModalContainer modal={addLink} onClose={()=>{setAddLink(false)}}>
-              <form action="" className="flex flex-col p-8 gap-3 w-full text-white font-suse" onSubmit={(e)=>{
-                e.preventDefault()
-                const newLink = {
-                  title: currentTitle,
-                  url: currentURL,
-                  description: currentRemark
-                }
-    
-                createLinkHandler(newLink, addLinkStore, dispatch)
-                setAddLink(false)
-                setCurrentRemark("")
-                setCurrentTitle("")
-                setCurrentURL("")
-    
-              }}>
-                  <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Link</h1>
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
-                    <CharacterCounter char={currentTitle.length} max={30}/>
-                  </div>
-                  <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
-                  <label className="text-sm uppercase font-bold mt-4" htmlFor="url">URL</label>
-                  <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
-                  <div className="flex items-center justify-between mt-4">
-                    <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
-                    <CharacterCounter char={currentRemark.length} max={200}/>
-                  </div>
-                  <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentRemark} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentRemark(e.target.value)}}}></textarea>
-                  <button type="submit" className="update-btn mt-4">Create Link</button>
-              </form>
-            </ModalContainer>
-
             {/* search link */}
             <div className="flex flex-col font-suse w-[50vw] relative">
               <div className="flex items-center gap-4 ring ring-white/30 bg-none px-2">
@@ -148,7 +117,7 @@ const NavLanding = () => {
           </DropdownMenu.Trigger>
           {
             session &&
-                <DropdownMenu.Content className='p-2 rounded-md bg-black border border-slate-600 z-90'>
+                <DropdownMenu.Content className='p-2 rounded-md bg-black border border-slate-600 z-80'>
                 <DropdownMenu.Item className='outline-0'><p className='text-white text-xl font-nora-bold px-2'>{session?.user?.name? session?.user?.name : "John Doe"}</p> </DropdownMenu.Item>
                 <DropdownMenu.Item className='outline-0'><p className='italic text-white font-nora-regular p-2 text-lg w-full border-b border-b-gray-400'>{session?.user?.email}</p></DropdownMenu.Item>
                 <DropdownMenu.Separator />
@@ -163,27 +132,151 @@ const NavLanding = () => {
       } 
       </div>
       <TextAlignJustify onClick={()=>setModal(true)} className='text-marked-dark-green cursor-pointer hidden max-md:block'/>
+      
+      
+      <ModalContainer modal={addLink} onClose={()=>{setAddLink(false)}}>
+        <form action="" className="flex flex-col p-8 gap-3 w-full text-white font-suse" onSubmit={(e)=>{
+          e.preventDefault()
+          const newLink = {
+            title: currentTitle,
+            url: currentURL,
+            description: currentDescription,
+            categoryId: selectedCategory
+          }
+
+          createLinkHandler(newLink, addLinkStore, dispatch)
+          setAddLink(false)
+          setCurrentDescription("")
+          setCurrentTitle("")
+          setCurrentURL("")
+          setSelectedCategory("")
+
+        }}>
+            <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Link</h1>
+            <div className="flex items-center justify-between">
+              <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+              <CharacterCounter char={currentTitle.length} max={30}/>
+            </div>
+            <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
+            <label className="text-sm uppercase font-bold mt-2" htmlFor="url">URL</label>
+            <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
+            <label className="text-sm uppercase font-bold mt-2" htmlFor="category">Category</label>
+            <div className="border border-white/40 bg-marked-gray select-wrapper relative" >
+              <select name="category" id="category" className="appearance-none p-2 outline-0 border border-white/40 bg-marked-gray w-full"
+              value={selectedCategory}
+              onChange={(e)=>{setSelectedCategory(e.target.value)}}
+              >
+                <option value="">Uncategorized</option>
+                {
+                  currentCategories.map((category)=>{
+                    return(
+                      <option key={category?._id} value={category?._id} >{category?.title}</option>
+                    )
+                  })
+                }
+              </select>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Description</label>
+              <CharacterCounter char={currentDescription.length} max={200}/>
+            </div>
+            <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40 max-h-[150px] flex-1 resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+            <button type="submit" className="update-btn mt-2">Create Link</button>
+        </form>
+      </ModalContainer>
+      
+       <ModalContainer modal={addCategory} onClose={()=>{setAddCategory(false)}}>
+        <form action="" className="flex flex-col p-8 gap-3 w-full text-white font-suse" onSubmit={(e)=>{
+          e.preventDefault()
+          const newCategory = {
+            title: currentTitle,
+            description: currentDescription,
+          }
+
+          createCategoryHandler(newCategory, addCategoryStore, dispatch)
+          setAddCategory(false)
+          setCurrentDescription("")
+          setCurrentTitle("")
+
+        }}>
+            <h1 className="font-bold uppercase text-2xl text-center w-full mb-4">Create New Category</h1>
+            <div className="flex items-center justify-between mt-4">
+              <label htmlFor="title" className="text-sm uppercase font-bold">Title</label>
+              <CharacterCounter char={currentTitle.length} max={30}/>
+            </div>
+            <input id="title" name="title" type="text" placeholder="Category Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}} required/>
+            <div className="flex items-center justify-between mt-4">
+              <label htmlFor="description" className="text-sm uppercase font-bold">Description</label>
+                <CharacterCounter char={currentDescription.length} max={200}/>
+            </div>
+            <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border max-h-[150px] flex-1resize-none border-white/40 scrollable"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+            <button type="submit" className="update-btn mt-4">Create Category</button>
+        </form>
+      </ModalContainer>
+
     </div>
 
     {/* Creating a navigation modal in mobile version */}
     {modal ?
-      <dialog className={`hidden max-md:flex flex-col justify-start items-center text-2xl font-bold text-nora-indigo gap-4 w-screen h-screen  bg-marked-accent p-8 m-0 z-40 absolute top-0 left-0 -translate-x-8 -translate-y-4`}>
-            <X  onClick={()=>setModal(false)}/>
-              {session &&
-              <>
-                <span className="py-2 flex items-center gap-4 w-full">
-                  { session?.user?.image ? 
-                  <img src={ session?.user?.image} alt="profile" className="profile !w-8 !h-8"/>:
-                  <div className="profile !w-8 !h-8"></div>}
-                  <p className='text-gray-800 font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
-                </span>
-                <p className='italic text-gray-800 font-nora-regular py-2 text-xl w-full'>{session?.user?.email}</p>
-                <div className='logout-btn' onClick={()=>{
-                    logoutHandler(navigate)
-                    }}>Logout</div>
-              </>
-              
-              }
+      <dialog className={`hidden max-md:flex flex-col justify-start items-center text-2xl font-bold text-white gap-4 w-screen h-screen  bg-black p-8 m-0 z-40 absolute top-0 left-0`}>
+        <span className="w-full flex justify-end items-center mb-8" >
+          <X onClick={()=>setModal(false)}/>
+        </span>
+          {session &&
+            <>
+            <span className="flex items-center gap-4 w-full">
+              { session?.user?.image ? 
+              <img src={ session?.user?.image} alt="profile" className="profile !w-8 !h-8"/>:
+              <div className="profile !w-8 !h-8"></div>}
+              <p className='text-white font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
+            </span>
+            <p className='italic text-marked-moderate-green/80 text-xl w-full'>{session?.user?.email}</p>
+            <hr className="my-3 w-full"/>
+            <div className="w-full h-[50vh] overflow-auto scrollable py-4 font-marked-regular">
+              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2">
+                <NotebookPen className="w-5 h-5"/>
+                <h1 onClick={()=>{
+                  setModal(false)
+                  setAddCategory(true)
+                }}>New Category</h1>
+              </span>
+                
+              {/* add link */}
+              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2" onClick={()=>{
+                setModal(false)
+                setAddLink(true)}}><CirclePlus className="w-5 h-5"/>New Link</span>
+                    
+              <span className="flex items-center gap-2 w-full cursor-pointer hover:bg-marked-moderate-green/60 px-3 py-2" 
+                onClick={()=>{
+                  setModal(false)}}
+              >
+                <BookAlert className="w-5 h-5"/>
+                <NavLink to={"/dashboard"}>
+                  Uncatagorized
+                </NavLink>
+              </span>
+
+              <details className="w-full px-3 py-2">
+                <summary className="text-marked-moderate-green mt-2">Categories</summary>
+                <div className="my-2 w-full overflow-y-auto scrollable flex-1 text-xl" onClick={()=>{
+                        setModal(false)}}>
+                  {
+                    currentCategories.length > 0 && currentCategories.map((category)=>{
+                      return <CategoryRow category={category} key={category?._id}/>
+                    })
+                  }
+                </div>
+              </details>
+            </div>
+                        
+            <hr className="my-3 w-full"/>
+            <div className='logout-btn !text-lg' onClick={()=>{
+                setModal(false)
+                logoutHandler(navigate)
+                }}>Logout</div>
+          </>
+          
+          }
       </dialog>
     :null}
     

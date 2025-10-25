@@ -15,8 +15,6 @@ const NavLanding = () => {
 
   const {data:session} = useSession();
 
-  console.log(session)
-
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -77,30 +75,34 @@ const NavLanding = () => {
 
     {/* Creating a navigation modal in mobile version */}
     {modal ?
-      <dialog className={`hidden max-md:flex flex-col justify-start items-center text-2xl font-bold text-nora-indigo gap-4 w-screen h-screen  bg-marked-accent p-8 m-0 z-40 absolute top-0 left-0 -translate-x-8 -translate-y-4`}>
-            <X  onClick={()=>setModal(false)}/>
+      <dialog className={`hidden max-md:flex flex-col text-2xl font-inter text-white wrap-anywhere gap-4 w-screen h-screen bg-black p-8 z-40 absolute top-0 left-0`}>
+            <span className="w-full flex justify-end items-center mb-8" >
+              <X onClick={()=>setModal(false)}/>
+            </span>
               {session ? 
               <>
-                <span className="py-2 flex items-center gap-4 w-full">
+                <span className="flex items-center gap-4 w-full">
                   { session?.user?.image ? 
                   <img src={ session?.user?.image} alt="profile" className="profile-home !w-8 !h-8"/>:
                   <div className="profile-home !w-8 !h-8"></div>}
-                  <p className='text-gray-800 font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
+                  <p className='text-white font-marked-semibold'>{ session?.user?.name ? session?.user?.name : "John Doe"}</p> 
                 </span>
-                <p className='italic text-gray-800 font-nora-regular py-2 text-xl w-full'>{session?.user?.email}</p>
-                <div className='logout-btn' onClick={()=>{
+                <p className='italic text-marked-moderate-green/80 text-xl w-full'>{session?.user?.email}</p>
+                <hr className="my-3"/>
+                <div className='logout-btn !text-lg' onClick={()=>{
+                    setModal(false)
                     logoutHandler(navigate)
                     }}>Logout</div>
               </>
               
               : 
               <>
-                <button className="border-b-2 border-marked-text-light-green py-2 cursor-pointer"
+                <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 cursor-pointer"
                  onClick={()=>{
                   googleLoginHandler()
                 }}
                 >Sign up</button>
-                <button className="border-b-2 border-marked-text-light-green py-2 flex items-center gap-2 cursor-pointer"><img src={chromeIcon} className="w-6 h-6"/>Add Chrome Extension</button>  
+                <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 flex items-center justify-center gap-2 cursor-pointer"><img src={chromeIcon} className="w-6 h-6"/>Add Chrome Extension</button>  
               </>  
               }
       </dialog>

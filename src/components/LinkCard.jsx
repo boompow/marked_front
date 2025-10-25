@@ -1,7 +1,7 @@
 import { Ellipsis } from "lucide-react"
 import { DropdownMenu } from "@radix-ui/themes"
 import ModalContainer from "./ModalContainer"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { updateLinkHandler, deleteLinkHandler, addLinkToCategory } from "../services/linkHandlers"
@@ -27,6 +27,14 @@ const LinkCard = ({link}) => {
   const [currentTitle, setCurrentTitle] = useState(link?.title ? link?.title : "")
   const [currentURL, setCurrentURL] = useState(link?.url ? link?.url : "")
   const [currentDescription, setCurrentDescription] = useState(link?.description ? link?.description : "")
+  const [selectedCategory, setSelectedCategory] = useState(link?.categoryId ?? "")
+   useEffect(() => {
+      if (link?.categoryId ) {
+        setSelectedCategory(link?.categoryId );
+      } else {
+        setSelectedCategory("");
+      }
+    }, [link]);
 
   const dispatch = useDispatch()
 
@@ -69,15 +77,15 @@ const LinkCard = ({link}) => {
        <NavLink to={link?.url ? link?.url :"/dashboard"} target='_blank' className='bg-none w-full flex-1 flex flex-col gap-2'>
        {
         link?.screenshot ?
-        <div className='flex-1'><img src={link?.screenshot} alt="screenshot" className='object-cover h-full transition-all duration-300 ease-in-out'/></div>
+        <div className='flex-1'><img src={link?.screenshot} alt="screenshot" className='object-cover h-full'/></div>
           
         :
       <div className='flex-1 bg-orange-300 hover:bg-orange-500'></div>
       }
           <p className="text-white p-2 font-bold hover:text-green-500 capitalize">{link?.title ? link?.title : "link name"}</p>
        </NavLink>
-        <div className="p-2 my-2 w-full h-[100px] bg-marked-gray wrap-anywhere scrollable overflow-y-auto text-white hidden group-hover:flex transition-all duration-300 ease-in-out">
-          <p>{link?.description ? link?.description : "add remark"}</p>
+        <div className="p-2 my-2 w-full bg-marked-gray wrap-anywhere scrollable overflow-y-auto text-white h-[100%] opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-[100px]  transition-all duration-500 ease-in-out">
+          <p>{link?.description ? link?.description : "add description"}</p>
         </div>
 
 
@@ -91,12 +99,17 @@ const LinkCard = ({link}) => {
             const updatedLink = {
               title: currentTitle,
               url: currentURL,
-              description: currentDescription
+              description: currentDescription,
+              categoryId: selectedCategory
             }
 
             if(link?._id){
-              updateLinkHandler(updatedLink, link?._id, editLinkStore, dispatch)
               setEditLink(false)
+              setCurrentDescription("")
+              setCurrentTitle("")
+              setCurrentURL("")
+              setSelectedCategory("")
+              updateLinkHandler(updatedLink, link?._id, editLinkStore, dispatch)
             }
 
           }}>
@@ -108,11 +121,27 @@ const LinkCard = ({link}) => {
               <input id="title" name="title" required type="text" placeholder="Link Title" className="p-2 outline-0 border border-white/40" value={currentTitle} onChange={(e)=>{if(e.target.value.length <= 30){setCurrentTitle(e.target.value)}}}/>
               <label className="text-sm uppercase font-bold mt-4" htmlFor="url">URL</label>
               <input id="url" type="url" name="url" required placeholder="Link URL" className="p-2 outline-0 border border-white/40"  value={currentURL} onChange={(e)=>{setCurrentURL(e.target.value)}}/>
+              <label className="text-sm uppercase font-bold mt-2" htmlFor="category">Category</label>
+              <div className="border border-white/40 bg-marked-gray select-wrapper relative" >
+                <select name="category" id="category" className="appearance-none p-2 outline-0 border border-white/40 bg-marked-gray w-full"
+                value={selectedCategory}
+                onChange={(e)=>{setSelectedCategory(e.target.value)}}
+                >
+                  <option value="">Uncategorized</option>
+                  {
+                    categories.map((category)=>{
+                      return(
+                        <option key={category?._id} value={category?._id} >{category?.title}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
               <div className="flex items-center justify-between mt-4">
-                <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Remark</label>
+                <label htmlFor="description" className="text-sm uppercase font-bold mt-2">Description</label>
                  <CharacterCounter char={currentDescription.length} max={200}/>
               </div>
-              <textarea name="description" id="description" placeholder="Add Remark" className="p-2 outline-0 border border-white/40 h-[150px] resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
+              <textarea name="description" id="description" placeholder="Add Description" className="p-2 outline-0 border border-white/40 max-h-[150px] flex-1 resize-none"  value={currentDescription} onChange={(e)=>{if(e.target.value.length <= 200){setCurrentDescription(e.target.value)}}}></textarea>
               <button type="submit" className="update-btn mt-4">Update Link</button>
           </form>
         </ModalContainer>
@@ -123,8 +152,8 @@ const LinkCard = ({link}) => {
           <form action="" className="flex flex-col py-4 px-8 gap-3 w-full text-white font-suse" onSubmit={(e)=>{
             e.preventDefault()
             if(link?._id){
-                deleteLinkHandler(link?._id, deleteLinkStore, dispatch)
-                setDeleteLink(false)
+              setDeleteLink(false)
+              deleteLinkHandler(link?._id, deleteLinkStore, dispatch)
               }
           }}>
             <p >Are you sure you want to delete this link?</p>

@@ -5,7 +5,7 @@ import categoryReducer from "./categorySlice.js"
 const store = configureStore({
     reducer: {
        links: linkReducer,
-       categories: categoryReducer
+       categories: categoryReducer,
     }
 
 })
