@@ -37,7 +37,7 @@ const NavLanding = () => {
           <motion.h1 initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="text-marked-dark-green text-3xl font-black uppercase">MARKED</motion.h1>
       </NavLink>
       <div className="flex gap-6 items-center max-md:hidden relative">
-        <motion.button initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="font-bold uppercase text-marked-dark-green hover:bg-marked-accent bg-none rounded-xl py-3 px-8 cursor-pointer flex items-center gap-2"><img src={chromeIcon} className="w-6 h-6"/>Chrome Extension</motion.button>    
+        {/* <motion.button initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="font-bold uppercase text-marked-dark-green hover:bg-marked-accent bg-none rounded-xl py-3 px-8 cursor-pointer flex items-center gap-2"><img src={chromeIcon} className="w-6 h-6"/>Chrome Extension</motion.button>     */}
       {session ? 
         <DropdownMenu.Root >
           <DropdownMenu.Trigger>
@@ -102,7 +102,7 @@ const NavLanding = () => {
                   googleLoginHandler()
                 }}
                 >Sign up</button>
-                <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 flex items-center justify-center gap-2 cursor-pointer"><img src={chromeIcon} className="w-6 h-6"/>Add Chrome Extension</button>  
+                {/* <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 flex items-center justify-center gap-2 cursor-pointer"><img src={chromeIcon} className="w-6 h-6"/>Add Chrome Extension</button>   */}
               </>  
               }
       </dialog>

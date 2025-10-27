@@ -6,7 +6,7 @@ export const googleLoginHandler = async () =>{
     try {
       const response = await signIn.social({
           provider: "google",
-          callbackURL: "http://localhost:5173/dashboard"
+          callbackURL: `${import.meta.env.VITE_CLIENT}/dashboard`,
         })
   
       console.log(response)
