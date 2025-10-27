@@ -117,9 +117,9 @@ const NavLanding = () => {
           </DropdownMenu.Trigger>
           {
             session &&
-                <DropdownMenu.Content className='p-2 rounded-md bg-black border border-slate-600 z-80'>
-                <DropdownMenu.Item className='outline-0'><p className='text-white text-xl font-nora-bold px-2'>{session?.user?.name? session?.user?.name : "John Doe"}</p> </DropdownMenu.Item>
-                <DropdownMenu.Item className='outline-0'><p className='italic text-white font-nora-regular p-2 text-lg w-full border-b border-b-gray-400'>{session?.user?.email}</p></DropdownMenu.Item>
+                <DropdownMenu.Content className='p-2 bg-marked-gray border border-slate-600 z-80'>
+                <DropdownMenu.Item className='outline-0'><p className='text-white text-xl px-2'>{session?.user?.name? session?.user?.name : "John Doe"}</p> </DropdownMenu.Item>
+                <DropdownMenu.Item className='outline-0'><p className='italic text-marked-moderate-green p-2 text-lg w-full border-b border-b-gray-400'>{session?.user?.email}</p></DropdownMenu.Item>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item className='outline-0'><button className='logout-btn mt-4' onClick={()=>{
                   logoutHandler(navigate)
