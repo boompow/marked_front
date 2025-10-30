@@ -19,7 +19,6 @@ export async function createLinkHandler(body, addLinkStore, dispatch){
         }
 
         const data = await response.json()
-        console.log(data)
         dispatch(addLinkStore(data.link))
 
         notification("Link Created Successfully", true)
