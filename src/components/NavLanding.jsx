@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useSession } from "../services/authClient";
 import { DropdownMenu } from "@radix-ui/themes";
-import {TextAlignJustify, X} from "lucide-react"
+import {TextAlignJustify, X, Github} from "lucide-react"
 import { NavLink } from "react-router";
 import { motion } from "motion/react";
 
@@ -37,6 +37,7 @@ const NavLanding = () => {
           <motion.h1 initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="text-marked-dark-green text-3xl font-black uppercase">MARKED</motion.h1>
       </NavLink>
       <div className="flex gap-6 items-center max-md:hidden relative">
+         <motion.a href="https://github.com/boompow/marked_front" target="_blank" initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="py-3 px-8 rounded-xl flex items-center justify-center gap-2 bg-marked-accent/70 hover:bg-marked-accent border-2 border-marked-dark-green text-marked-dark-green cursor-pointer uppercase font-semibold"><Github/>Star it</motion.a>
         {/* <motion.button initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="font-bold uppercase text-marked-dark-green hover:bg-marked-accent bg-none rounded-xl py-3 px-8 cursor-pointer flex items-center gap-2"><img src={chromeIcon} className="w-6 h-6"/>Chrome Extension</motion.button>     */}
       {session ? 
         <DropdownMenu.Root >
@@ -97,11 +98,12 @@ const NavLanding = () => {
               
               : 
               <>
-                <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 cursor-pointer"
+                <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 uppercase cursor-pointer"
                  onClick={()=>{
                   googleLoginHandler()
                 }}
                 >Sign up</button>
+               <motion.a href="https://github.com/boompow/marked_front" target="_blank" initial={{ y:10, opacity:0}} animate={{ y:0, opacity:1}} transition={{duration:0.5, delay:0.5}} className="py-2 px-4 mb-4 flex items-center justify-center gap-2 bg-marked-accent text-marked-dark-green cursor-pointer uppercase"><Github/>Star it</motion.a>
                 {/* <button className="bg-marked-moderate-green/80 py-2 px-4 mb-4 flex items-center justify-center gap-2 cursor-pointer"><img src={chromeIcon} className="w-6 h-6"/>Add Chrome Extension</button>   */}
               </>  
               }
