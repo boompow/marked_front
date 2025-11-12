@@ -4,7 +4,6 @@ import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 import CategoryOutlet from "../components/CategoryOutlet";
 import UncategorizedOutlet from "../components/UncatagorizedOutlet";
-import GoogleCallback from "../services/GoogleCallbackHandler";
 
 const Router = () => {
   return (
@@ -15,7 +14,6 @@ const Router = () => {
         <Route path="/dashboard/:categoryId" element={<CategoryOutlet/>}/>
       </Route>
       <Route path="/*" element={<NotFound/>}/>
-      <Route path="/auth/callback/google" element={<GoogleCallback/>}/>
     </Routes>
   )
 }

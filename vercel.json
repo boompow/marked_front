@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/auth/callback/google", "destination": "/" }
-  ]
-}
