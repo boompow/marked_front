@@ -2,6 +2,7 @@ import { authClient } from "./authClient";
 import { useEffect } from "react";
 
 export default function GoogleCallback() {
+  console.log("works")
   useEffect(() => {
     const finishLogin = async () => {
       try {
