@@ -4,7 +4,7 @@ import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 import CategoryOutlet from "../components/CategoryOutlet";
 import UncategorizedOutlet from "../components/UncatagorizedOutlet";
-import GoogleCallback from "../services/googleCallbackHnadler";
+import GoogleCallback from "../services/GoogleCallbackHandler";
 
 const Router = () => {
   return (
