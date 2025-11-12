@@ -15,7 +15,7 @@ const Router = () => {
         <Route path="/dashboard/:categoryId" element={<CategoryOutlet/>}/>
       </Route>
       <Route path="/*" element={<NotFound/>}/>
-      <Route path="/auth/callback/google" element={<GoogleCallback/>}/>
+      <Route path="/api/auth/callback/google" element={<GoogleCallback/>}/>
     </Routes>
   )
 }
